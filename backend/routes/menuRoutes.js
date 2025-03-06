@@ -9,6 +9,15 @@ const {
   deleteMenu 
 } = require('../controllers/menuController');
 
+const {createUser,loginUser} = require('../controllers/userController');
+
+// Create new user
+router.post('/user', createUser);
+
+// Login user
+router.post('/login', loginUser);
+
+
 // Get all menus
 router.get('/', getAllMenus);
 
