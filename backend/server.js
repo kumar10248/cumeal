@@ -20,6 +20,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/menu', menuRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
 
 // Default route
 app.get('/', (req, res) => {
