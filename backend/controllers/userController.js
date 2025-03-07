@@ -65,14 +65,20 @@ const loginUser = async (req, res, next) => {
     try {
         const { username, password } = req.body;
 
-        if (!username) {
-            throw new ApiError(400, "Username is required");
+        // Check both username and password
+        if (!username || !password) {
+            throw new ApiError(400, "Username and password are required");
         }
 
         const user = await User.findOne({ username });
 
         if (!user) {
             throw new ApiError(404, "User not found");
+        }
+
+        // Ensure the isPasswordCorrect method exists
+        if (typeof user.isPasswordCorrect !== 'function') {
+            throw new ApiError(500, "Authentication method unavailable");
         }
 
         const isPasswordValid = await user.isPasswordCorrect(password);
@@ -85,9 +91,10 @@ const loginUser = async (req, res, next) => {
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
+        // Adjust cookie options based on environment
         const options = {
             httpOnly: true,
-            secure: true
+            secure: process.env.NODE_ENV === 'production' // Only use secure in production
         };
 
         return res.status(200)
@@ -103,10 +110,10 @@ const loginUser = async (req, res, next) => {
                 message: "User logged in successfully"
             });
     } catch (error) {
+        console.error("Login error:", error); // Add debugging log
         next(error);
     }
 };
-
 const logoutUser = async (req, res, next) => {
     try {
         await User.findByIdAndUpdate(
