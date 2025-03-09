@@ -6,7 +6,9 @@ const {
   getCurrentWeekMenu, 
   createMenu, 
   updateMenu, 
-  deleteMenu 
+  deleteMenu ,
+  getNutritionalStats,
+  getTopFavoriteItems
 } = require('../controllers/menuController');
 
 
@@ -28,5 +30,11 @@ router.put('/:id', updateMenu);
 
 // Delete menu
 router.delete('/:id', deleteMenu);
+
+// Get nutritional stats
+router.get('/stats', getNutritionalStats);
+
+// Get top favorite items
+router.get('/favorites', getTopFavoriteItems);
 
 module.exports = router;
